@@ -1,0 +1,90 @@
+/* 
+
+This will be my SQL code used to import, combine, prepare, process, and analyse the Cyclistic Case Study for the Google Data Analytics Professional Certificate. 
+
+All data was pulled from DIVY bikes by Motivate Internationl under their license. https://ride.divvybikes.com/system-data
+
+MYSQL was the database used for this project
+
+My steps for this Case Study were:
+
+1. Creating a dataset 
+2. Downloading the previous year worth of data from DVY bikes
+3. Importing each indiviudal years data into their own seperate table
+4. Combining all tables into one
+5. Scanning the table created for various errors
+6. Removing data with errors
+7. Saving cleaned data to be visualized within Tableau
+
+Code begins on step 4
+*/
+
+----------------Step 4: Combining all tables into one one Table--------------
+
+SELECT *, 
+FROM (
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_04`
+  UNION ALL 
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_05`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_07`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_08`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_09`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_10`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_11`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_12`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2022_01`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2022_02`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2022_03`) AS Combined
+
+SELECT ended_at, started_at, (ended_at - started_at) * 1440 AS Trip_Length_mins
+FROM Combined
+
+
+-------------STEP 5: Scanning the table created for various errors----------------------
+
+SELECT DISTINCT(member_casual
+FROM Combined
+ 
+SELECT ride_id, count(*) 
+FROM  Combined
+GROUP BY ride_id
+HAVING count(*)>1
+
+SELECT rideable_type, count(*)
+FROM divvy_tripdata
+GROUP by rideable_type
+
+SELECT min (end_lng), max(end_lng), min (end_lat), max(end_lat), min (start_lng), max(start_lng), min (start_lat), max(start_lat)
+FROM Combined
+
+SELECT *
+FROM Combined 
+WHERE start_station_name IS NOT NULL 
+AND start_station_id IS NOT NULL
+AND end_station_name IS NOT NULL
+AND end_station_id IS NOT NULL
+AND ride_id IS NOT NULL
+AND rideable_type IS NOT NULL
+AND start_lat IS NOT NULL
+AND start_lng IS NOT NULL
+AND end_lat IS NOT NULL
+AND end_lng IS NOT NULL
+AND member_casual IS NOT NULL
+
+/*The above code could be written as individual columns are filtered out if it is NULL to find those rows with errors */
+
+SELECT end_station_id, end_station_name, count(*)
+FROM divvy_tripdata
+GROUP BY end_station_id, end_station_name
+
+-------------STEP 6: Removing the data with errors----------------------
+
