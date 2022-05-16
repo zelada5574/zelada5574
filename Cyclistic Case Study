@@ -60,7 +60,7 @@ GROUP BY ride_id
 HAVING count(*)>1
 
 SELECT rideable_type, count(*)
-FROM divvy_tripdata
+FROM Combined
 GROUP by rideable_type
 
 SELECT min (end_lng), max(end_lng), min (end_lat), max(end_lat), min (start_lng), max(start_lng), min (start_lat), max(start_lat)
@@ -83,8 +83,81 @@ AND member_casual IS NOT NULL
 /*The above code could be written as individual columns are filtered out if it is NULL to find those rows with errors */
 
 SELECT end_station_id, end_station_name, count(*)
-FROM divvy_tripdata
+FROM Combined
 GROUP BY end_station_id, end_station_name
 
 -------------STEP 6: Removing the data with errors----------------------
 
+--exclude cases where start time is greater than end time
+SELECT count(1)
+FROM Combined
+WHERE started_at >= ended_at
+
+UPDATE Combined
+SET exclude = 'Y'
+WHERE started_at >= ended_at;
+
+--exclude cases where trip length less than or equal to 0
+SELECT *
+FROM Combined
+ORDER BY trip_length_mins asc;
+
+UPDATE Combined
+SET exclude = 'Y'
+TRIP trip_length_mins <= 0;
+
+SELECT *
+FROM Combined
+WHERE exclude is null
+ORDER BY trip_length_mins asc;
+
+SELECT trip_length_mins, count(1)
+FROM divvy_tripdata
+WHERE exclude is null
+GROUP by trip_length_mins;
+
+SELECT count(1)
+FROM Combined
+WHERE exclude is null
+
+------------Saving cleaned data to be visualized within Tableau---------
+
+SELECT rownum id, rideable_type, started_at, ended_at, start_station_name, end_station_name, start_lat, start_lng, end_lat, end_lng, member_casual, trip_length_mins
+FROM Combined
+
+*/Need to finish this last query before visual*/
+
+SELECT *, (ended_at - started_at) AS trip_length_mins
+FROM (
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_04`
+  UNION ALL 
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_05`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_07`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_08`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_09`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_10`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_11`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2021_12`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2022_01`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2022_02`
+  UNION ALL
+  SELECT* FROM `bikeshare-347503.bikeshare.2022_03`) AS Combined 
+WHERE start_station_name IS NOT NULL 
+AND start_station_id IS NOT NULL
+AND end_station_name IS NOT NULL
+AND end_station_id IS NOT NULL
+AND ride_id IS NOT NULL
+AND rideable_type IS NOT NULL
+AND start_lat IS NOT NULL
+AND start_lng IS NOT NULL
+AND end_lat IS NOT NULL
+AND end_lng IS NOT NULL
+AND member_casual IS NOT NULL
