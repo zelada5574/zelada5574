@@ -1,7 +1,6 @@
 - 👋 Hi, I’m @zelada5574
 - 👀 I’m interested in Data Analytics
-- 🌱 I’m currently learning SQL
-- 📫 Reach me here!
+- 📫 Reach me here! jarram999@gmail.com
 
 <!---
 zelada5574/zelada5574 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
