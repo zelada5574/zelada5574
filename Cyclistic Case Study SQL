@@ -159,42 +159,10 @@ AND end_lat IS NOT NULL
 AND end_lng IS NOT NULL
 AND member_casual IS NOT NULL)
 
-with final as 
-
-(SELECT *, (ended_at - started_at) * 1440 AS time_length_mins
-FROM ( 
-  SELECT* FROM `bikeshare-347503.bikeshare.2021_04`
-  UNION ALL 
-  SELECT* FROM `bikeshare-347503.bikeshare.2021_05`
-  UNION ALL
-  SELECT* FROM `bikeshare-347503.bikeshare.2021_07`
-  UNION ALL
-  SELECT* FROM `bikeshare-347503.bikeshare.2021_08`
-  UNION ALL
-  SELECT* FROM `bikeshare-347503.bikeshare.2021_09`
-  UNION ALL
-  SELECT* FROM `bikeshare-347503.bikeshare.2021_10`
-  UNION ALL
-  SELECT* FROM `bikeshare-347503.bikeshare.2021_11`
-  UNION ALL
-  SELECT* FROM `bikeshare-347503.bikeshare.2021_12`
-  UNION ALL
-  SELECT* FROM `bikeshare-347503.bikeshare.2022_01`
-  UNION ALL
-  SELECT* FROM `bikeshare-347503.bikeshare.2022_02`
-  UNION ALL
-  SELECT* FROM `bikeshare-347503.bikeshare.2022_03`) AS Combined 
-WHERE start_station_name IS NOT NULL 
-AND start_station_id IS NOT NULL
-AND end_station_name IS NOT NULL
-AND end_station_id IS NOT NULL
-AND ride_id IS NOT NULL
-AND rideable_type IS NOT NULL
-AND start_lat IS NOT NULL
-AND start_lng IS NOT NULL
-AND end_lat IS NOT NULL
-AND end_lng IS NOT NULL
-AND member_casual IS NOT NULL)
-SELECT member_casual, count(ride_id)
+SELECT member_casual, count(*)
 FROM final
-GROUP BY member_casual, started_at
+GROUP BY member_casual
+
+SELECT member_casual, rideable_type, count (*)
+FROM final
+Group BY member_casual, rideable_type
