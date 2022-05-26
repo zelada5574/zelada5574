@@ -108,7 +108,7 @@ TRIP trip_length_mins <= 0;
 
 SELECT *
 FROM Combined
-WHERE exclude is null
+W HERE exclude is null
 ORDER BY trip_length_mins asc;
 
 SELECT trip_length_mins, count(1)
@@ -124,7 +124,7 @@ WHERE exclude is null
 
 with final AS 
 
-(SELECT *, ((ended_at - started_at) * 1440) AS trip_length_mins
+(SELECT *, DATETIME_DIFF(ended_at, started_at, MINUTE) AS trip_time_mins
 FROM (
   SELECT* FROM `bikeshare-347503.bikeshare.2021_04`
   UNION ALL 
@@ -161,8 +161,44 @@ AND member_casual IS NOT NULL)
 
 SELECT member_casual, count(*)
 FROM final
+WHERE trip_time_mins > 0
 GROUP BY member_casual
 
 SELECT member_casual, rideable_type, count (*)
 FROM final
+WHERE trip_time_mins > 0
 Group BY member_casual, rideable_type
+
+SELECT member_casual, count(*) AS trips_less_than_one_hour
+from final
+where trip_time_mins >= 60
+group by member_casual
+
+SELECT member_casual, count(*) AS trips_one_to_two_hours
+from final
+where trip_time_mins >= 60 AND trip_time_mins <=120
+group by member_casual
+
+SELECT member_casual, start_station_name, end_station_name, count(*) AS total_trips
+FROM final
+GROUP BY member_casual,  start_station_name, end_station_name
+ORDER BY total_trips desc
+LIMIT 20
+
+SELECT member_casual, start_station_name, end_station_name, count(*) AS total_trips
+FROM final
+WHERE member_casual = 'member'
+GROUP BY member_casual,  start_station_name, end_station_name
+ORDER BY total_trips desc
+LIMIT 20
+
+SELECT member_casual, start_station_name, end_station_name, count(*) AS total_trips
+FROM final
+WHERE member_casual = 'casual'
+GROUP BY member_casual,  start_station_name, end_station_name
+ORDER BY total_trips desc
+LIMIT 20
+
+SELECT member_casual, extract(DAYOFWEEK FROM started_at) AS day_of_week, count(*) AS total_trips
+FROM final
+GROUP BY member_casual, extract(DAYOFWEEK FROM started_at)
