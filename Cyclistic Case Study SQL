@@ -199,6 +199,16 @@ GROUP BY member_casual,  start_station_name, end_station_name
 ORDER BY total_trips desc
 LIMIT 20
 
-SELECT member_casual, extract(DAYOFWEEK FROM started_at) AS day_of_week, count(*) AS total_trips
-FROM final
-GROUP BY member_casual, extract(DAYOFWEEK FROM started_at)
+SELECT member_casual, count(*) AS total_trips,
+CASE 
+WHEN extract(DAYOFWEEK FROM started_at) = 1 THEN 'Monday'
+WHEN extract(DAYOFWEEK FROM started_at) = 2 THEN 'Tuesday'
+WHEN extract(DAYOFWEEK FROM started_at) = 3 THEN 'Wednesday'
+WHEN extract(DAYOFWEEK FROM started_at) = 4 THEN 'Thursday'
+WHEN extract(DAYOFWEEK FROM started_at) = 5 THEN 'Friday'
+WHEN extract(DAYOFWEEK FROM started_at) = 6 THEN 'Saturday'
+WHEN extract(DAYOFWEEK FROM started_at) = 7 THEN 'Sunday'
+END AS Day_of_week
+FROM final 
+GROUP BY 1,3
+ORDER BY Day_of_week DESC
