@@ -176,7 +176,7 @@ group by member_casual
 
 SELECT member_casual, count(*) AS trips_length_less_than_two_hours
 from final
-where trip_time_mins >= 2880
+where trip_time_mins >= 120
 group by member_casual
 
 SELECT member_casual, count(*) AS trips_length_day
