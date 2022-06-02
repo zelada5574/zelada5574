@@ -174,14 +174,14 @@ from final
 where trip_time_mins >= 60
 group by member_casual
 
+SELECT member_casual, count(*) AS trips_length_less_than_two_hours
+from final
+where trip_time_mins >= 2880
+group by member_casual
+
 SELECT member_casual, count(*) AS trips_length_day
 from final
 where trip_time_mins <=1440
-group by member_casual
-
-SELECT member_casual, count(*) AS trips_length_more_than_day
-from final
-where trip_time_mins >= 1440
 group by member_casual
 
 SELECT member_casual, start_station_name, end_station_name, count(*) AS total_trips
