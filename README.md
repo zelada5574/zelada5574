@@ -18,7 +18,7 @@ It was organised by month, and assumed to be credible since it was compiled and 
 
 After importing the data, the first step was to inspect the data for anomalies. A new column for trip_time_mins was created. Nulls were removed from the dataset. A full description of the process is described in the Update Cyclistic Case Study SQL file.
 
-4) Analyse Phase
+4) Analyze Phase
 
 In this phase, queries were created to uncover trends that were highlighted in the data visualisations.
 
